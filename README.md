@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CineGalería
 
-## Getting Started
+Galería de películas y series hecha con Next.js. Muestra una cartelera con títulos populares y un buscador con la ficha completa de cada película. Los datos vienen de [OMDb API](https://www.omdbapi.com/).
 
-First, run the development server:
+## Tecnologías
+
+- Next.js 16 (App Router) con TypeScript
+- Tailwind CSS
+- axios
+
+## Instalación
+
+Necesitas Node.js 20 o superior y una API key gratuita de OMDb ([pídela aquí](https://www.omdbapi.com/apikey.aspx)).
+
+```bash
+npm install
+cp .env.example .env.local
+```
+
+Abre `.env.local` y pega tu key:
+
+```
+OMDB_API_KEY=tu_api_key_aqui
+```
+
+## Uso
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3002](http://localhost:3002).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## SSR y CSR
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Página principal (`/`), SSR:** se renderiza en el servidor en cada visita. Las películas llegan ya dentro del HTML, así la página carga con contenido y los buscadores la pueden leer.
+- **Buscador (`/buscar`) y modal de detalle, CSR:** se ejecutan en el navegador porque necesitan estado, eventos y efectos: los resultados se actualizan mientras escribes y el detalle se abre sin recargar la página.
 
-## Learn More
+La API key nunca llega al navegador. El buscador llama a las rutas propias `/api/search` y `/api/movie/[id]`, y es el servidor quien consulta OMDb.
 
-To learn more about Next.js, take a look at the following resources:
+## Despliegue en Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Importa el repositorio en [Vercel](https://vercel.com/new).
+2. En **Environment Variables** agrega `OMDB_API_KEY` con tu key.
+3. Despliega. Vercel detecta Next.js y usa `npm run build` automáticamente.
