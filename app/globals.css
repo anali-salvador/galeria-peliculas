@@ -1,0 +1,301 @@
+@import "tailwindcss";
+
+/* Paleta "Noche de estreno": azul noche con acentos aqua y rosa */
+:root {
+  --noche: #131a3b;
+  --platea: #1f2558;
+  --celuloide: #0c0f2e;
+  --acento-1: #4fe3e0;
+  --acento-2: #ff7ac6;
+  --lavanda: #f2f0fa;
+
+  /* Colores de la aurora del fondo */
+  --azul-electrico: #1b3fa8;
+  --violeta: #4b2a9a;
+  --turquesa-oscuro: #0e6c8c;
+  --magenta-oscuro: #8a2a7a;
+
+  --degradado: linear-gradient(90deg, var(--acento-1), var(--acento-2), var(--acento-1));
+}
+
+@theme inline {
+  --color-noche: var(--noche);
+  --color-platea: var(--platea);
+  --color-celuloide: var(--celuloide);
+  --color-acento-1: var(--acento-1);
+  --color-acento-2: var(--acento-2);
+  --color-lavanda: var(--lavanda);
+  --font-sans: var(--font-body);
+  --font-titulo: var(--font-display);
+}
+
+html {
+  color-scheme: dark;
+  scrollbar-width: thin;
+  scrollbar-color: var(--platea) var(--noche);
+}
+
+body {
+  background: var(--noche);
+  color: var(--lavanda);
+}
+
+/* Fondo aurora: capa fija detrás de todo, con un velo azul noche para que el texto se lea bien */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgb(19 26 59 / 0.35), rgb(19 26 59 / 0.35)),
+    linear-gradient(
+      125deg,
+      var(--noche) 0%,
+      var(--azul-electrico) 16%,
+      var(--noche) 30%,
+      var(--violeta) 44%,
+      var(--noche) 56%,
+      var(--turquesa-oscuro) 68%,
+      var(--azul-electrico) 80%,
+      var(--magenta-oscuro) 90%,
+      var(--noche) 100%
+    );
+  background-size: 100% 100%, 400% 400%;
+  animation: aurora 26s ease-in-out infinite alternate;
+}
+
+@keyframes aurora {
+  from {
+    background-position: 0 0, 0% 30%;
+  }
+  to {
+    background-position: 0 0, 100% 70%;
+  }
+}
+
+::selection {
+  background: var(--acento-2);
+  color: var(--noche);
+}
+
+/* Anillo de enfoque para todo lo interactivo: aqua de 3px con separación */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--acento-1);
+  outline-offset: 3px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--platea);
+  border-radius: 9999px;
+  border: 2px solid var(--noche);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2e3678;
+}
+
+/* Degradado aqua a rosa que se desplaza de lado a lado (entradas y botones principales) */
+.degradado-movil {
+  background-image: var(--degradado);
+  background-size: 200% 100%;
+  color: var(--noche);
+  animation: degradado 7s ease-in-out infinite alternate;
+}
+
+@keyframes degradado {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
+}
+
+/* Subrayado con el degradado móvil para el enlace activo de la barra */
+.enlace-activo {
+  position: relative;
+}
+
+.enlace-activo[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -8px;
+  height: 2px;
+  border-radius: 9999px;
+  background-image: var(--degradado);
+  background-size: 200% 100%;
+  animation: degradado 7s ease-in-out infinite alternate;
+}
+
+/* Luces del letrero: alternan aqua y rosa, y se encienden en cadena (pares e impares) */
+.bulb {
+  --bulb-color: var(--acento-1);
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0 22%, var(--bulb-color) 55%);
+  box-shadow:
+    0 0 6px 1px color-mix(in srgb, var(--bulb-color) 70%, transparent),
+    0 0 16px 3px color-mix(in srgb, var(--bulb-color) 30%, transparent);
+  animation: bulb-chain 1.4s ease-in-out infinite alternate;
+}
+
+.bulb:nth-child(even) {
+  --bulb-color: var(--acento-2);
+  animation-direction: alternate-reverse;
+}
+
+@keyframes bulb-chain {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.3;
+  }
+}
+
+/* Entrada de cine: muescas semicirculares a los lados (a la altura de --notch-y) */
+.ticket {
+  --notch: 8px;
+  --notch-y: 50%;
+  --ticket-mask:
+    radial-gradient(var(--notch) at 0 var(--notch-y), #0000 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(var(--notch) at 100% var(--notch-y), #0000 98%, #000) right / 51% 100% no-repeat;
+  -webkit-mask: var(--ticket-mask);
+  mask: var(--ticket-mask);
+}
+
+/* Talón del pie de página: muescas en las esquinas superiores */
+.ticket-stub {
+  --stub-mask:
+    radial-gradient(16px at 0 0, #0000 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(16px at 100% 0, #0000 98%, #000) right / 51% 100% no-repeat;
+  -webkit-mask: var(--stub-mask);
+  mask: var(--stub-mask);
+}
+
+/* Tira de película: banda de celuloide con perforaciones arriba y abajo */
+.filmstrip {
+  position: relative;
+  background: var(--celuloide);
+  padding-block: 28px;
+}
+
+.filmstrip::before,
+.filmstrip::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 12px;
+  background: var(--noche);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='12'%3E%3Crect x='7' width='14' height='12' rx='3'/%3E%3C/svg%3E") repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='12'%3E%3Crect x='7' width='14' height='12' rx='3'/%3E%3C/svg%3E") repeat-x;
+}
+
+.filmstrip::before {
+  top: 8px;
+}
+
+.filmstrip::after {
+  bottom: 8px;
+}
+
+/* Las tarjetas se alinean con el contenido centrado (max-w-7xl) */
+.filmstrip-track {
+  --gutter: max(1rem, calc((100% - 80rem) / 2 + 2rem));
+  padding-inline: var(--gutter);
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: thin;
+  scrollbar-color: var(--platea) transparent;
+}
+
+.filmstrip-track::after {
+  content: "";
+  flex: 0 0 1px;
+}
+
+/* Tarjetas esqueleto mientras carga la búsqueda: brillo suave que recorre la superficie */
+.esqueleto {
+  background-image: linear-gradient(100deg, var(--platea) 35%, #2e3678 50%, var(--platea) 65%);
+  background-size: 250% 100%;
+  animation: brillo 1.6s ease-in-out infinite;
+}
+
+@keyframes brillo {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
+/* Entrada del modal de detalle: responde a una acción de la persona */
+.modal-fondo {
+  animation: modal-aparecer 0.2s ease-out both;
+}
+
+.modal-panel {
+  animation: modal-subir 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes modal-aparecer {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-subir {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* El campo de búsqueda tiene su propio botón para limpiar */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+/* Sin animaciones: los degradados quedan fijos en su punto medio y las luces encendidas */
+@media (prefers-reduced-motion: reduce) {
+  .esqueleto,
+  .modal-fondo,
+  .modal-panel {
+    animation: none;
+  }
+
+  body::before {
+    animation: none;
+    background-position: 0 0, 50% 50%;
+  }
+
+  .degradado-movil,
+  .enlace-activo[aria-current="page"]::after {
+    animation: none;
+    background-position: 50% 50%;
+  }
+
+  .bulb {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-property: color, background-color, border-color, opacity !important;
+  }
+}
